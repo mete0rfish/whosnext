@@ -26,10 +26,19 @@ public class ReviewEntity {
     private CompanyEntity company;
 
     private String title;
+
+    @Column(columnDefinition = "TEXT")
     private String content;
+
+    @Column(columnDefinition = "TEXT")
     private String tips;
+
     private int rating;
+
+    @Column(columnDefinition = "TEXT")
     private String preparationPeriod;
+
+    @Column(columnDefinition = "TEXT")
     private String techStack;
 
     @Enumerated(EnumType.STRING)

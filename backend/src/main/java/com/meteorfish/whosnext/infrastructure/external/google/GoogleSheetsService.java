@@ -54,7 +54,7 @@ public class GoogleSheetsService {
 
     public List<GoogleFormRow> getNewResponses(int lastReadRow) {
         try {
-            String range = "A" + (lastReadRow + 1) + ":F";
+            String range = "A" + (lastReadRow + 1) + ":J";
 
             ValueRange response = sheetsService.spreadsheets().values()
                     .get(spreadsheetId, range)

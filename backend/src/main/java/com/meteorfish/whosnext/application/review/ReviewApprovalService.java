@@ -2,6 +2,7 @@ package com.meteorfish.whosnext.application.review;
 
 import com.meteorfish.whosnext.domain.review.JobCategory;
 import com.meteorfish.whosnext.domain.review.Review;
+import com.meteorfish.whosnext.infrastructure.external.ai.GeminiService;
 import com.meteorfish.whosnext.infrastructure.persistence.company.CompanyEntity;
 import com.meteorfish.whosnext.infrastructure.persistence.company.CompanyRepository;
 import com.meteorfish.whosnext.infrastructure.persistence.member.MemberEntity;
@@ -16,20 +17,26 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Service
 public class ReviewApprovalService {
+    private final Logger logger = Logger.getLogger(ReviewApprovalService.class.getName());
+
     private final ReviewStagingRepository stagingRepository;
     private final ReviewRepository reviewRepository;
     private final MemberRepository memberRepository;
     private final CompanyRepository companyRepository;
+    private final GeminiService geminiService;
 
     public ReviewApprovalService(ReviewStagingRepository stagingRepository, ReviewRepository reviewRepository,
-                                 MemberRepository memberRepository, CompanyRepository companyRepository) {
+                                 MemberRepository memberRepository, CompanyRepository companyRepository,
+                                 GeminiService geminiService) {
         this.stagingRepository = stagingRepository;
         this.reviewRepository = reviewRepository;
         this.memberRepository = memberRepository;
         this.companyRepository = companyRepository;
+        this.geminiService = geminiService;
     }
 
 
@@ -39,9 +46,17 @@ public class ReviewApprovalService {
                 .orElseThrow(() -> new IllegalArgumentException("대기 중인 리뷰가 없습니다."));
 
         MemberEntity member = memberRepository.findByEmail(staging.getRawMemberEmail())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
-        CompanyEntity company = companyRepository.findByName(staging.getRawCompanyName())
-                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 회사입니다. 먼저 회사를 등록하세요."));
+                .orElseGet(this::getOrCreateAnonymousMember);
+
+        String normalizedCompanyName = geminiService.normalizeCompanyName(staging.getRawCompanyName());
+
+        logger.info("원본 기업명: " + staging.getRawCompanyName() + ", 정규화 기업명: " + normalizedCompanyName);
+
+        CompanyEntity company = companyRepository.findByName(normalizedCompanyName)
+                .orElseGet(() -> {
+                    CompanyEntity newCompany = new CompanyEntity(UUID.randomUUID(), normalizedCompanyName, "정보없음", "정보없음");
+                    return companyRepository.save(newCompany);
+                });
 
         JobCategory jobCategory = parseJobCategory(staging.getJobCategory());
 
@@ -62,6 +77,15 @@ public class ReviewApprovalService {
         reviewRepository.save(ReviewEntity.from(review, member, company));
 
         staging.approve();
+    }
+
+    private MemberEntity getOrCreateAnonymousMember() {
+        String anonymousEmail = "anonymous@whosnext.com";
+        return memberRepository.findByEmail(anonymousEmail)
+                .orElseGet(() -> {
+                    MemberEntity anonymous = new MemberEntity(null, anonymousEmail, "익명", "anonymous", "system", "USER");
+                    return memberRepository.save(anonymous);
+                });
     }
 
     private JobCategory parseJobCategory(String rawCategory) {
