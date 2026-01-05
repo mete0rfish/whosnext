@@ -68,4 +68,11 @@ public class ReviewEntity {
                 createdAt
         );
     }
+
+    public void updateFromDomain(Review review) {
+        this.title = review.getTitle();
+        this.content = review.getContent();
+        this.tips = review.getTips();
+        this.rating = review.getRating();
+    }
 }

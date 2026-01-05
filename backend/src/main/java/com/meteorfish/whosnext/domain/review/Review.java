@@ -7,10 +7,10 @@ public class Review {
     private final UUID id;
     private final Long memberId;
     private final UUID companyId;
-    private final String title;
-    private final String content;
-    private final String tips;
-    private final int rating;
+    private String title;
+    private String content;
+    private String tips;
+    private int rating;
     private final LocalDateTime createdAt;
 
     public Review(UUID id, Long memberId, UUID companyId, String title, String content, String tips, int rating, LocalDateTime createdAt) {
@@ -22,6 +22,18 @@ public class Review {
         this.tips = tips;
         this.rating = rating;
         this.createdAt = createdAt;
+    }
+
+    public void update(String title, String content, String tips, int rating) {
+        validateRating(rating);
+        this.title = title;
+        this.content = content;
+        this.tips = tips;
+        this.rating = rating;
+    }
+
+    private void validateRating(int rating) {
+        if (rating < 1 || rating > 5) throw new IllegalArgumentException("평점은 1~5점 사이여야 합니다.");
     }
 
     public UUID getId() {
