@@ -14,8 +14,22 @@ public class MemberAppService {
         this.memberRepository = memberRepository;
     }
 
+    @Transactional(readOnly = true)
+    public Member getMemberById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."))
+                .toDomain();
+    }
+
+    @Transactional(readOnly = true)
+    public Member getMemberByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."))
+                .toDomain();
+    }
+
     @Transactional
-    public void changeNickname(Long memberId, String newNickname) {
+    public void updateNickname(Long memberId, String newNickname) {
         MemberEntity entity = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 

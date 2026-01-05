@@ -45,6 +45,10 @@ public class MemberEntity {
         return new Member(id, email, nickname, socialId, provider, role);
     }
 
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
     public Long getId() {
         return id;
     }
