@@ -40,6 +40,12 @@ public class CompanyEntity {
         return new Company(id, name, industry, location);
     }
 
+    public void updateFromDomain(Company company) {
+        this.name = company.getName();
+        this.industry = company.getIndustry();
+        this.location = company.getLocation();
+    }
+
     public UUID getId() {
         return id;
     }
