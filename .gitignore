@@ -48,3 +48,6 @@ gradle-app.setting
 .classpath
 
 .idea
+
+application-prod.yaml
+credentials.json

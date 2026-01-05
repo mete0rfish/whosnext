@@ -60,3 +60,11 @@ dependencyManagement {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+task copySubmoduleResources(type: Copy) {
+    from 'whosnext-sub'
+	into 'src/main/resources'
+	include 'application-prod.yaml', 'credentials.json'
+}
+
+processResources.dependsOn copySubmoduleResources

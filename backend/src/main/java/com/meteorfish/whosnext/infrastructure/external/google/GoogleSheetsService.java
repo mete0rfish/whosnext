@@ -34,9 +34,14 @@ public class GoogleSheetsService {
     }
 
     private Sheets createSheetsService() throws GeneralSecurityException, IOException {
-        ClassPathResource resource = new ClassPathResource(credentialsPath);
+        String path = credentialsPath;
+        if (path.startsWith("classpath:")) {
+            path = path.substring("classpath:".length());
+        }
+
+        ClassPathResource resource = new ClassPathResource(path);
         if (!resource.exists()) {
-            throw new IOException("Credentials file not found in classpath: " + credentialsPath);
+            throw new IOException("Credentials file not found in classpath: " + path);
         }
         
         try (InputStream inputStream = resource.getInputStream()) {

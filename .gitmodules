@@ -1,0 +1,4 @@
+[submodule "backend/whosnext-sub"]
+	path = backend/whosnext-sub
+	url = https://github.com/mete0rfish/whosnext-sub.git
+	branch = main
