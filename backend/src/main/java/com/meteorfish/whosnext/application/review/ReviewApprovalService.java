@@ -3,6 +3,8 @@ package com.meteorfish.whosnext.application.review;
 import com.meteorfish.whosnext.domain.review.JobCategory;
 import com.meteorfish.whosnext.domain.review.Review;
 import com.meteorfish.whosnext.infrastructure.external.ai.GeminiService;
+import com.meteorfish.whosnext.infrastructure.persistence.company.CompanyAliasEntity;
+import com.meteorfish.whosnext.infrastructure.persistence.company.CompanyAliasRepository;
 import com.meteorfish.whosnext.infrastructure.persistence.company.CompanyEntity;
 import com.meteorfish.whosnext.infrastructure.persistence.company.CompanyRepository;
 import com.meteorfish.whosnext.infrastructure.persistence.member.MemberEntity;
@@ -27,15 +29,17 @@ public class ReviewApprovalService {
     private final ReviewRepository reviewRepository;
     private final MemberRepository memberRepository;
     private final CompanyRepository companyRepository;
+    private final CompanyAliasRepository companyAliasRepository;
     private final GeminiService geminiService;
 
     public ReviewApprovalService(ReviewStagingRepository stagingRepository, ReviewRepository reviewRepository,
                                  MemberRepository memberRepository, CompanyRepository companyRepository,
-                                 GeminiService geminiService) {
+                                 CompanyAliasRepository companyAliasRepository, GeminiService geminiService) {
         this.stagingRepository = stagingRepository;
         this.reviewRepository = reviewRepository;
         this.memberRepository = memberRepository;
         this.companyRepository = companyRepository;
+        this.companyAliasRepository = companyAliasRepository;
         this.geminiService = geminiService;
     }
 
@@ -48,15 +52,7 @@ public class ReviewApprovalService {
         MemberEntity member = memberRepository.findByEmail(staging.getRawMemberEmail())
                 .orElseGet(this::getOrCreateAnonymousMember);
 
-        String normalizedCompanyName = geminiService.normalizeCompanyName(staging.getRawCompanyName());
-
-        logger.info("원본 기업명: " + staging.getRawCompanyName() + ", 정규화 기업명: " + normalizedCompanyName);
-
-        CompanyEntity company = companyRepository.findByName(normalizedCompanyName)
-                .orElseGet(() -> {
-                    CompanyEntity newCompany = new CompanyEntity(UUID.randomUUID(), normalizedCompanyName, "정보없음", "정보없음");
-                    return companyRepository.save(newCompany);
-                });
+        CompanyEntity company = getOrCreateCompany(staging.getRawCompanyName());
 
         JobCategory jobCategory = parseJobCategory(staging.getJobCategory());
 
@@ -77,6 +73,33 @@ public class ReviewApprovalService {
         reviewRepository.save(ReviewEntity.from(review, member, company));
 
         staging.approve();
+    }
+
+    private CompanyEntity getOrCreateCompany(String rawName) {
+        String trimmedName = rawName.trim();
+
+        return companyRepository.findByName(trimmedName)
+                .or(() -> {
+                    return companyAliasRepository.findByAliasName(trimmedName)
+                            .map(CompanyAliasEntity::getCompany);
+                })
+                .orElseGet(() -> {
+                    logger.info("Cache Miss: Gemini 호출 - " + trimmedName);
+                    String normalizedName = geminiService.normalizeCompanyName(trimmedName);
+
+                    CompanyEntity company = companyRepository.findByName(normalizedName)
+                            .orElseGet(() -> {
+                                CompanyEntity newCompany = new CompanyEntity(UUID.randomUUID(), normalizedName, "정보없음", "정보없음");
+                                return companyRepository.save(newCompany);
+                            });
+
+                    if (!trimmedName.equalsIgnoreCase(normalizedName)) {
+                        companyAliasRepository.save(new CompanyAliasEntity(trimmedName, company));
+                        logger.info("Alias Cached: " + trimmedName + " -> " + normalizedName);
+                    }
+
+                    return company;
+                });
     }
 
     private MemberEntity getOrCreateAnonymousMember() {
