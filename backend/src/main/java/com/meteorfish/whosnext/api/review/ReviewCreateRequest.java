@@ -1,5 +1,7 @@
 package com.meteorfish.whosnext.api.review;
 
+import com.meteorfish.whosnext.domain.review.JobCategory;
+
 import java.util.UUID;
 
 public record ReviewCreateRequest(
@@ -7,6 +9,9 @@ public record ReviewCreateRequest(
         String title,
         String content,
         String tips,
-        int rating
+        int rating,
+        String preparationPeriod,
+        String techStack,
+        JobCategory jobCategory
 ) {
 }

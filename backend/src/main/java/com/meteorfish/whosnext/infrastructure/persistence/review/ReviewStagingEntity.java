@@ -21,6 +21,10 @@ public class ReviewStagingEntity {
     private String tips;
     private String rating;
 
+    private String preparationPeriod;
+    private String techStack;
+    private String jobCategory;
+
     @Enumerated(EnumType.STRING)
     private StagingStatus status;
 
@@ -28,13 +32,16 @@ public class ReviewStagingEntity {
 
     protected ReviewStagingEntity() {}
 
-    public ReviewStagingEntity(String rawMemberEmail, String rawCompanyName, String title, String content, String tips, String rating) {
+    public ReviewStagingEntity(String rawMemberEmail, String rawCompanyName, String title, String content, String tips, String rating, String preparationPeriod, String techStack, String jobCategory) {
         this.rawMemberEmail = rawMemberEmail;
         this.rawCompanyName = rawCompanyName;
         this.title = title;
         this.content = content;
         this.tips = tips;
         this.rating = rating;
+        this.preparationPeriod = preparationPeriod;
+        this.techStack = techStack;
+        this.jobCategory = jobCategory;
         this.status = StagingStatus.PENDING;
         this.createdAt = LocalDateTime.now();
     }
@@ -49,4 +56,7 @@ public class ReviewStagingEntity {
     public String getContent() { return content; }
     public String getTips() { return tips; }
     public String getRating() { return rating; }
+    public String getPreparationPeriod() { return preparationPeriod; }
+    public String getTechStack() { return techStack; }
+    public String getJobCategory() { return jobCategory; }
 }

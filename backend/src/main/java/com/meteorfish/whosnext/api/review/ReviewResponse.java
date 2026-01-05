@@ -1,5 +1,6 @@
 package com.meteorfish.whosnext.api.review;
 
+import com.meteorfish.whosnext.domain.review.JobCategory;
 import com.meteorfish.whosnext.domain.review.Review;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,9 @@ public record ReviewResponse(
         String content,
         String tips,
         int rating,
+        String preparationPeriod,
+        String techStack,
+        JobCategory jobCategory,
         LocalDateTime createdAt
 ) {
     public static ReviewResponse from(Review review) {
@@ -24,6 +28,9 @@ public record ReviewResponse(
                 review.getContent(),
                 review.getTips(),
                 review.getRating(),
+                review.getPreparationPeriod(),
+                review.getTechStack(),
+                review.getJobCategory(),
                 review.getCreatedAt()
         );
     }

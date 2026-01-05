@@ -1,5 +1,6 @@
 package com.meteorfish.whosnext.infrastructure.persistence.review;
 
+import com.meteorfish.whosnext.domain.review.JobCategory;
 import com.meteorfish.whosnext.domain.review.Review;
 import com.meteorfish.whosnext.infrastructure.persistence.company.CompanyEntity;
 import com.meteorfish.whosnext.infrastructure.persistence.member.MemberEntity;
@@ -28,11 +29,17 @@ public class ReviewEntity {
     private String content;
     private String tips;
     private int rating;
+    private String preparationPeriod;
+    private String techStack;
+
+    @Enumerated(EnumType.STRING)
+    private JobCategory jobCategory;
+
     private LocalDateTime createdAt;
 
     protected ReviewEntity() {}
 
-    private ReviewEntity(UUID id, MemberEntity member, CompanyEntity company, String title, String content, String tips, int rating, LocalDateTime createdAt) {
+    private ReviewEntity(UUID id, MemberEntity member, CompanyEntity company, String title, String content, String tips, int rating, String preparationPeriod, String techStack, JobCategory jobCategory, LocalDateTime createdAt) {
         this.id = id;
         this.member = member;
         this.company = company;
@@ -40,6 +47,9 @@ public class ReviewEntity {
         this.content = content;
         this.tips = tips;
         this.rating = rating;
+        this.preparationPeriod = preparationPeriod;
+        this.techStack = techStack;
+        this.jobCategory = jobCategory;
         this.createdAt = createdAt;
     }
 
@@ -52,6 +62,9 @@ public class ReviewEntity {
                 review.getContent(),
                 review.getTips(),
                 review.getRating(),
+                review.getPreparationPeriod(),
+                review.getTechStack(),
+                review.getJobCategory(),
                 review.getCreatedAt()
         );
     }
@@ -65,6 +78,9 @@ public class ReviewEntity {
                 content,
                 tips,
                 rating,
+                preparationPeriod,
+                techStack,
+                jobCategory,
                 createdAt
         );
     }
@@ -74,5 +90,8 @@ public class ReviewEntity {
         this.content = review.getContent();
         this.tips = review.getTips();
         this.rating = review.getRating();
+        this.preparationPeriod = review.getPreparationPeriod();
+        this.techStack = review.getTechStack();
+        this.jobCategory = review.getJobCategory();
     }
 }

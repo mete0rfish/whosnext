@@ -1,5 +1,6 @@
 package com.meteorfish.whosnext.application.review;
 
+import com.meteorfish.whosnext.domain.review.JobCategory;
 import com.meteorfish.whosnext.domain.review.Review;
 import com.meteorfish.whosnext.infrastructure.persistence.company.CompanyEntity;
 import com.meteorfish.whosnext.infrastructure.persistence.company.CompanyRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.UUID;
 
 @Service
@@ -41,6 +43,8 @@ public class ReviewApprovalService {
         CompanyEntity company = companyRepository.findByName(staging.getRawCompanyName())
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 회사입니다. 먼저 회사를 등록하세요."));
 
+        JobCategory jobCategory = parseJobCategory(staging.getJobCategory());
+
         Review review = new Review(
                 null,
                 member.getId(),
@@ -49,11 +53,24 @@ public class ReviewApprovalService {
                 staging.getContent(),
                 staging.getTips(),
                 Integer.parseInt(staging.getRating()),
+                staging.getPreparationPeriod(),
+                staging.getTechStack(),
+                jobCategory,
                 LocalDateTime.now()
         );
 
         reviewRepository.save(ReviewEntity.from(review, member, company));
 
         staging.approve();
+    }
+
+    private JobCategory parseJobCategory(String rawCategory) {
+        if (rawCategory == null || rawCategory.isBlank()) {
+            return JobCategory.OTHER;
+        }
+        return Arrays.stream(JobCategory.values())
+                .filter(c -> c.name().equalsIgnoreCase(rawCategory) || c.getDescription().equals(rawCategory))
+                .findFirst()
+                .orElse(JobCategory.OTHER);
     }
 }

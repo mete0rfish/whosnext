@@ -8,7 +8,10 @@ public record GoogleFormRow(
         String title,
         String content,
         String tips,
-        String rating
+        String rating,
+        String preparationPeriod,
+        String techStack,
+        String jobCategory
 ) {
     public static GoogleFormRow fromList(List<Object> row) {
         return new GoogleFormRow(
@@ -17,7 +20,10 @@ public record GoogleFormRow(
                 getSafeString(row, 3), // 제목
                 getSafeString(row, 4), // 내용
                 getSafeString(row, 5), // 꿀팁
-                getSafeString(row, 6)  // 평점
+                getSafeString(row, 6), // 평점
+                getSafeString(row, 7), // 취준 기간
+                getSafeString(row, 8), // 기술 스택
+                getSafeString(row, 9)  // 직군
         );
     }
 

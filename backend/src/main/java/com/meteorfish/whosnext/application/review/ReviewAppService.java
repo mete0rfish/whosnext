@@ -38,7 +38,9 @@ public class ReviewAppService {
 
         Review review = new Review(null, memberId, request.companyId(),
                 request.title(), request.content(),
-                request.tips(), request.rating(), LocalDateTime.now());
+                request.tips(), request.rating(),
+                request.preparationPeriod(), request.techStack(), request.jobCategory(),
+                LocalDateTime.now());
 
         ReviewEntity entity = ReviewEntity.from(review, member, company);
         return reviewRepository.save(entity).toDomain().getId();
@@ -69,7 +71,8 @@ public class ReviewAppService {
         }
 
         Review review = entity.toDomain();
-        review.update(request.title(), request.content(), request.tips(), request.rating());
+        review.update(request.title(), request.content(), request.tips(), request.rating(),
+                request.preparationPeriod(), request.techStack(), request.jobCategory());
 
         entity.updateFromDomain(review);
     }

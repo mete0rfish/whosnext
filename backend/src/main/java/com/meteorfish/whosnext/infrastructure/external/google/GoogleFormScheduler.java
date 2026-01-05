@@ -41,12 +41,15 @@ public class GoogleFormScheduler {
 
         for (GoogleFormRow row : newRows) {
             ReviewStagingEntity staging = new ReviewStagingEntity(
-                    row.companyName(),
                     row.email(),
-                    row.rating(),
+                    row.companyName(),
                     row.title(),
                     row.content(),
-                    row.tips()
+                    row.tips(),
+                    row.rating(),
+                    row.preparationPeriod(),
+                    row.techStack(),
+                    row.jobCategory()
             );
             reviewStagingRepository.save(staging);
         }
