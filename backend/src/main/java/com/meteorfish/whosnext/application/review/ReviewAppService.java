@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ReviewAppService {
@@ -47,6 +49,13 @@ public class ReviewAppService {
         return reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new IllegalArgumentException("리뷰를 찾을 수 없습니다."))
                 .toDomain();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Review> getAllReviews() {
+        return reviewRepository.findAll().stream()
+                .map(ReviewEntity::toDomain)
+                .collect(Collectors.toList());
     }
 
     @Transactional

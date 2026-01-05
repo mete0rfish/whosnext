@@ -9,8 +9,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Tag(name = "Review API", description = "취업 후기 관리 API")
 @RestController
@@ -37,5 +39,15 @@ public class ReviewController {
     public ResponseEntity<ReviewResponse> getOne(@PathVariable UUID id) {
         Review review = reviewAppService.getReview(id);
         return ResponseEntity.ok(ReviewResponse.from(review));
+    }
+
+    @Operation(summary = "후기 목록 조회", description = "모든 취업 후기 목록을 조회합니다.")
+    @GetMapping
+    public ResponseEntity<List<ReviewResponse>> getAll() {
+        List<Review> reviews = reviewAppService.getAllReviews();
+        List<ReviewResponse> response = reviews.stream()
+                .map(ReviewResponse::from)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
     }
 }
