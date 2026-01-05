@@ -1,5 +1,7 @@
-package com.meteorfish.whosnext.api.review;
+package com.meteorfish.whosnext.application.review;
 
+import com.meteorfish.whosnext.api.review.ReviewCreateRequest;
+import com.meteorfish.whosnext.api.review.ReviewUpdateRequest;
 import com.meteorfish.whosnext.domain.review.Review;
 import com.meteorfish.whosnext.infrastructure.persistence.company.CompanyEntity;
 import com.meteorfish.whosnext.infrastructure.persistence.company.CompanyRepository;

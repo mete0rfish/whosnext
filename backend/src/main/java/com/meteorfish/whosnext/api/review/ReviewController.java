@@ -1,5 +1,6 @@
 package com.meteorfish.whosnext.api.review;
 
+import com.meteorfish.whosnext.application.review.ReviewAppService;
 import com.meteorfish.whosnext.domain.review.Review;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
