@@ -1,0 +1,80 @@
+/* Review Detail Page Styles */
+.review-detail-container {
+    background: white;
+    border-radius: 1rem;
+    padding: 2.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 2rem auto;
+}
+
+.review-header {
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.review-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.review-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.review-rating {
+    color: #f59e0b;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.review-section {
+    margin-bottom: 2rem;
+}
+
+.section-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 0.75rem;
+    display: block;
+}
+
+.review-content {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #334155;
+    white-space: pre-wrap; /* 줄바꿈 보존 */
+}
+
+.review-tips {
+    background-color: #f0f9ff;
+    border-left: 4px solid #3b82f6;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin-top: 2rem;
+}
+
+.tips-content {
+    color: #1e40af;
+    line-height: 1.6;
+}
+
+.btn-back {
+    display: inline-block;
+    margin-bottom: 1rem;
+    color: #64748b;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.btn-back:hover {
+    color: #3b82f6;
+}

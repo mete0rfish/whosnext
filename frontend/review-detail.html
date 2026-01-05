@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhosNext - 후기 상세</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/review-detail.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <nav class="navbar">
+            <div class="container">
+                <a href="/" class="brand">WhosNext</a>
+                <ul class="nav-links">
+                    <li><a href="/">홈</a></li>
+                    <li><a href="/reviews.html" class="active">후기</a></li>
+                    <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSfcoo-YEBL2zL3bfjlj3orccaXun-Qk3Y9B8NRCvCQTcYN0XA/viewform" target="_blank">후기 작성</a></li> 
+                    <li><a href="/profile.html">내 정보</a></li>
+                    <li><a href="#" id="logout-link" style="color: #ef4444;">로그아웃</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="container">
+            <div id="loading-state" class="loading-state">Loading review details...</div>
+            <div id="review-detail-content">
+                <!-- JS로 동적 생성됨 -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/review-detail.js"></script>
+</body>
+</html>

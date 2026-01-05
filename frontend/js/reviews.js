@@ -47,10 +47,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </p>
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span style="background: #f1f5f9; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; color: #475569;">
-                            꿀팁 포함
+                            ${review.tips ? '💡 꿀팁 포함' : '후기'}
                         </span>
                         <button class="btn" style="padding: 0.5rem 1rem; font-size: 0.875rem;" 
-                            onclick="alert('Review Detail for ID: ${review.id} (Not implemented fully)')">상세 보기</button>
+                            onclick="location.href='/review-detail.html?id=${review.id}'">상세 보기</button>
                     </div>
                 </div>
             `;
