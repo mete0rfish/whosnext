@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhosNext - 취업 현황 공유</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <nav class="navbar">
+            <div class="container">
+                <a href="/" class="brand">WhosNext</a>
+                <ul class="nav-links">
+                    <li><a href="/" class="active">홈</a></li>
+                    <li><a href="/reviews.html">후기</a></li>
+                    <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSfcoo-YEBL2zL3bfjlj3orccaXun-Qk3Y9B8NRCvCQTcYN0XA/viewform" target="_blank">후기 작성</a></li> 
+                    <li><a href="/profile.html">내 정보</a></li>
+                    <li><a href="#" id="logout-link" style="color: #ef4444;">로그아웃</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main id="main-content" class="container">
+            <section class="hero" style="text-align: center; padding: 4rem 0;">
+                <h1 style="font-size: 3rem; margin-bottom: 1rem; background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    당신의 다음 커리어는 어디인가요?
+                </h1>
+                <p style="font-size: 1.25rem; color: #94a3b8; margin-bottom: 2rem;">
+                    졸업생들의 취업 현황을 공유하고 함께 성장하세요.
+                </p>
+                <a href="/reviews.html" class="btn">후기 보러가기</a>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script>
+        // index.html 전용 간단 스크립트 (로그아웃 및 로그인 체크)
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 로그아웃 처리
+            const logoutLink = document.getElementById('logout-link');
+            if (logoutLink) {
+                logoutLink.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    try {
+                        await window.api.logout();
+                        window.location.href = '/login.html';
+                    } catch (error) {
+                        window.location.href = '/login.html';
+                    }
+                });
+            }
+
+            // 로그인 체크
+            try {
+                await window.api.getMyProfile();
+            } catch (error) {
+                if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+                    window.location.href = '/login.html';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

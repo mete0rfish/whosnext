@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhosNext - 취업 후기</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/reviews.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <nav class="navbar">
+            <div class="container">
+                <a href="/" class="brand">WhosNext</a>
+                <ul class="nav-links">
+                    <li><a href="/">홈</a></li>
+                    <li><a href="/reviews.html" class="active">후기</a></li>
+                    <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSfcoo-YEBL2zL3bfjlj3orccaXun-Qk3Y9B8NRCvCQTcYN0XA/viewform" target="_blank">후기 작성</a></li> 
+                    <li><a href="/profile.html">내 정보</a></li>
+                    <li><a href="#" id="logout-link" style="color: #ef4444;">로그아웃</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="container">
+            <div class="page-header">
+                <h2>취업 후기</h2>
+                <button class="btn" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSfcoo-YEBL2zL3bfjlj3orccaXun-Qk3Y9B8NRCvCQTcYN0XA/viewform', '_blank')">후기 작성하기</button>
+            </div>
+            
+            <div id="loading-state" class="loading-state">Loading reviews...</div>
+            <div id="review-list" class="grid-list">
+                <!-- JS로 동적 생성됨 -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/reviews.js"></script>
+</body>
+</html>

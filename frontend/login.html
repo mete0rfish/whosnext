@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhosNext - 로그인</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8fafc;
+            margin: 0;
+        }
+        .login-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        .login-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+        }
+        .kakao-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #FEE500;
+            color: #000000;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+        .kakao-btn:hover {
+            background-color: #FDD835;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1 class="login-title">WhosNext 로그인</h1>
+        <p style="color: #64748b; margin-bottom: 2rem;">서비스를 이용하려면 로그인이 필요합니다.</p>
+
+        <a href="http://localhost:8080/oauth2/authorization/kakao" class="kakao-btn">
+            카카오 로그인
+        </a>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        // 페이지 로드 시 로그인 상태 확인
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // 프로필 정보를 요청하여 로그인 여부 확인
+                await window.api.getMyProfile();
+                // 성공하면(로그인 상태이면) 메인 페이지로 이동
+                window.location.href = '/';
+            } catch (error) {
+                // 에러 발생(로그인 안 됨) -> 로그인 페이지 유지
+                // 401, 403 등의 에러는 정상적인 비로그인 상태로 간주
+            }
+        });
+    </script>
+</body>
+</html>
