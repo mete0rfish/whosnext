@@ -42,7 +42,7 @@ public class MemberEntity {
     }
 
     public Member toDomain() {
-        return new Member(id, email, nickname, socialId, provider, role);
+        return new Member(id, email, socialId, provider, role, nickname);
     }
 
     public void updateNickname(String nickname) {
