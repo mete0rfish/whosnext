@@ -44,4 +44,28 @@ public class MemberEntity {
     public Member toDomain() {
         return new Member(id, email, nickname, socialId, provider, role);
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public String getSocialId() {
+        return socialId;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public String getRole() {
+        return role;
+    }
 }
