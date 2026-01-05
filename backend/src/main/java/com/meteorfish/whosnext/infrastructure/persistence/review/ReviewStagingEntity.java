@@ -1,0 +1,52 @@
+package com.meteorfish.whosnext.infrastructure.persistence.review;
+
+import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Entity
+@Table(name = "review_staging")
+public class ReviewStagingEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    private String rawMemberEmail;
+    private String rawCompanyName;
+    private String title;
+    @Column(columnDefinition = "text")
+    private String content;
+    @Column(columnDefinition = "text")
+    private String tips;
+    private String rating;
+
+    @Enumerated(EnumType.STRING)
+    private StagingStatus status;
+
+    private LocalDateTime createdAt;
+
+    protected ReviewStagingEntity() {}
+
+    public ReviewStagingEntity(String rawMemberEmail, String rawCompanyName, String title, String content, String tips, String rating) {
+        this.rawMemberEmail = rawMemberEmail;
+        this.rawCompanyName = rawCompanyName;
+        this.title = title;
+        this.content = content;
+        this.tips = tips;
+        this.rating = rating;
+        this.status = StagingStatus.PENDING;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public void approve() { this.status = StagingStatus.APPROVED; }
+    public void reject() { this.status = StagingStatus.REJECTED; }
+
+    public UUID getId() { return id; }
+    public String getRawMemberEmail() { return rawMemberEmail; }
+    public String getRawCompanyName() { return rawCompanyName; }
+    public String getTitle() { return title; }
+    public String getContent() { return content; }
+    public String getTips() { return tips; }
+    public String getRating() { return rating; }
+}
