@@ -39,7 +39,7 @@
     </div>
 
     <!-- Scripts -->
-    <script src="js/api.js"></script>
+    <script src="js/api.js?v=2"></script>
     <script>
         // index.html 전용 간단 스크립트 (로그아웃 및 로그인 체크)
         document.addEventListener('DOMContentLoaded', async () => {
@@ -58,13 +58,13 @@
             }
 
             // 로그인 체크
-            try {
-                await window.api.getMyProfile();
-            } catch (error) {
-                if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-                    window.location.href = '/login.html';
-                }
-            }
+            // try {
+            //     await window.api.getMyProfile();
+            // } catch (error) {
+            //     if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+            //         window.location.href = '/login.html';
+            //     }
+            // }
         });
     </script>
 </body>
