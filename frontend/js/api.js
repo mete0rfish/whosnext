@@ -1,5 +1,5 @@
 const apiClient = axios.create({
-    baseURL: 'http://localhost:8080',
+    baseURL: 'https://concerned-minni-meteorfish-04bbceb2.koyeb.app',
     headers: {
         'Content-Type': 'application/json',
     },
