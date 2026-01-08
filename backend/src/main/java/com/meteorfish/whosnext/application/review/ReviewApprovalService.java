@@ -2,7 +2,7 @@ package com.meteorfish.whosnext.application.review;
 
 import com.meteorfish.whosnext.domain.review.JobCategory;
 import com.meteorfish.whosnext.domain.review.Review;
-import com.meteorfish.whosnext.infrastructure.external.ai.GeminiService;
+import com.meteorfish.whosnext.infrastructure.external.mcp.McpClient;
 import com.meteorfish.whosnext.infrastructure.persistence.company.CompanyAliasEntity;
 import com.meteorfish.whosnext.infrastructure.persistence.company.CompanyAliasRepository;
 import com.meteorfish.whosnext.infrastructure.persistence.company.CompanyEntity;
@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -30,13 +31,20 @@ public class ReviewApprovalService {
     private final MemberRepository memberRepository;
     private final CompanyRepository companyRepository;
     private final CompanyAliasRepository companyAliasRepository;
+    private final McpClient mcpClient;
 
-    public ReviewApprovalService(ReviewStagingRepository stagingRepository, ReviewRepository reviewRepository, MemberRepository memberRepository, CompanyRepository companyRepository, CompanyAliasRepository companyAliasRepository) {
+    public ReviewApprovalService(ReviewStagingRepository stagingRepository,
+                                 ReviewRepository reviewRepository,
+                                 MemberRepository memberRepository,
+                                 CompanyRepository companyRepository,
+                                 CompanyAliasRepository companyAliasRepository,
+                                 McpClient mcpClient) {
         this.stagingRepository = stagingRepository;
         this.reviewRepository = reviewRepository;
         this.memberRepository = memberRepository;
         this.companyRepository = companyRepository;
         this.companyAliasRepository = companyAliasRepository;
+        this.mcpClient = mcpClient;
     }
 
     @Transactional
@@ -47,7 +55,12 @@ public class ReviewApprovalService {
         MemberEntity member = memberRepository.findByEmail(staging.getRawMemberEmail())
                 .orElseGet(this::getOrCreateAnonymousMember);
 
-        CompanyEntity company = getOrCreateCompany(staging.getRawCompanyName());
+        String targetCompanyName = staging.getNormalizedCompanyName();
+        if (targetCompanyName == null || targetCompanyName.isBlank()) {
+            targetCompanyName = staging.getRawCompanyName();
+        }
+
+        CompanyEntity company = getOrCreateCompany(staging.getRawCompanyName(), targetCompanyName);
 
         JobCategory jobCategory = parseJobCategory(staging.getJobCategory());
 
@@ -70,27 +83,41 @@ public class ReviewApprovalService {
         staging.approve();
     }
 
-    private CompanyEntity getOrCreateCompany(String rawName) {
-        String trimmedName = rawName.trim();
+    private CompanyEntity getOrCreateCompany(String rawName, String normalizedNameHint) {
+        String trimmedRawName = rawName.trim();
+        String trimmedNormalizedName = (normalizedNameHint != null) ? normalizedNameHint.trim() : trimmedRawName;
 
-        return companyRepository.findByName(trimmedName)
+        // 1. 원본 이름으로 회사 찾기
+        return companyRepository.findByName(trimmedRawName)
                 .or(() -> {
-                    return companyAliasRepository.findByAliasName(trimmedName)
+                    return companyAliasRepository.findByAliasName(trimmedRawName)
                             .map(CompanyAliasEntity::getCompany);
                 })
                 .orElseGet(() -> {
-                    logger.info("Cache Miss: Gemini 호출 - " + trimmedName);
-                    String normalizedName = geminiService.normalizeCompanyName(trimmedName);
+                    String finalNormalizedName = trimmedNormalizedName;
 
-                    CompanyEntity company = companyRepository.findByName(normalizedName)
+                    if (finalNormalizedName.equals(trimmedRawName)) {
+                         try {
+                             var result = mcpClient.normalizeCompanyNames(Collections.singletonList(trimmedRawName));
+                             if (result != null && result.containsKey(trimmedRawName)) {
+                                 finalNormalizedName = result.get(trimmedRawName);
+                             }
+                         } catch (Exception e) {
+                             logger.warning("MCP call failed during approval: " + e.getMessage());
+                         }
+                    }
+
+                    String effectiveName = finalNormalizedName; // lambda effectively final
+
+                    CompanyEntity company = companyRepository.findByName(effectiveName)
                             .orElseGet(() -> {
-                                CompanyEntity newCompany = new CompanyEntity(UUID.randomUUID(), normalizedName, "정보없음", "정보없음");
+                                CompanyEntity newCompany = new CompanyEntity(UUID.randomUUID(), effectiveName, "정보없음", "정보없음");
                                 return companyRepository.save(newCompany);
                             });
 
-                    if (!trimmedName.equalsIgnoreCase(normalizedName)) {
-                        companyAliasRepository.save(new CompanyAliasEntity(trimmedName, company));
-                        logger.info("Alias Cached: " + trimmedName + " -> " + normalizedName);
+                    if (!trimmedRawName.equalsIgnoreCase(effectiveName)) {
+                        companyAliasRepository.save(new CompanyAliasEntity(trimmedRawName, company));
+                        logger.info("Alias Cached: " + trimmedRawName + " -> " + effectiveName);
                     }
 
                     return company;
