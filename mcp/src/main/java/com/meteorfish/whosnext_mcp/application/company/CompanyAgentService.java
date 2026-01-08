@@ -8,6 +8,7 @@ import org.springframework.ai.converter.BeanOutputConverter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CompanyAgentService {
@@ -39,6 +40,6 @@ public class CompanyAgentService {
 
         ChatResponse response = chatModel.call(new Prompt(finalPrompt));
 
-        return converter.convert(response.getResult().getOutput().getContent());
+        return converter.convert(Objects.requireNonNull(response.getResult().getOutput().getText()));
     }
 }
