@@ -14,6 +14,8 @@ public class ReviewStagingEntity {
 
     private String rawMemberEmail;
     private String rawCompanyName;
+    private String normalizedCompanyName;
+
     private String title;
     @Column(columnDefinition = "text")
     private String content;
@@ -46,12 +48,18 @@ public class ReviewStagingEntity {
         this.createdAt = LocalDateTime.now();
     }
 
+    public void updateNormalizedCompanyName(String normalizedName) {
+        this.normalizedCompanyName = normalizedName;
+        this.status = StagingStatus.ANALYZED;
+    }
+
     public void approve() { this.status = StagingStatus.APPROVED; }
     public void reject() { this.status = StagingStatus.REJECTED; }
 
     public UUID getId() { return id; }
     public String getRawMemberEmail() { return rawMemberEmail; }
     public String getRawCompanyName() { return rawCompanyName; }
+    public String getNormalizedCompanyName() { return normalizedCompanyName; }
     public String getTitle() { return title; }
     public String getContent() { return content; }
     public String getTips() { return tips; }
@@ -59,4 +67,5 @@ public class ReviewStagingEntity {
     public String getPreparationPeriod() { return preparationPeriod; }
     public String getTechStack() { return techStack; }
     public String getJobCategory() { return jobCategory; }
+    public StagingStatus getStatus() { return status; }
 }
