@@ -30,19 +30,14 @@ public class ReviewApprovalService {
     private final MemberRepository memberRepository;
     private final CompanyRepository companyRepository;
     private final CompanyAliasRepository companyAliasRepository;
-    private final GeminiService geminiService;
 
-    public ReviewApprovalService(ReviewStagingRepository stagingRepository, ReviewRepository reviewRepository,
-                                 MemberRepository memberRepository, CompanyRepository companyRepository,
-                                 CompanyAliasRepository companyAliasRepository, GeminiService geminiService) {
+    public ReviewApprovalService(ReviewStagingRepository stagingRepository, ReviewRepository reviewRepository, MemberRepository memberRepository, CompanyRepository companyRepository, CompanyAliasRepository companyAliasRepository) {
         this.stagingRepository = stagingRepository;
         this.reviewRepository = reviewRepository;
         this.memberRepository = memberRepository;
         this.companyRepository = companyRepository;
         this.companyAliasRepository = companyAliasRepository;
-        this.geminiService = geminiService;
     }
-
 
     @Transactional
     public void approveReview(UUID reviewStagingId) {
