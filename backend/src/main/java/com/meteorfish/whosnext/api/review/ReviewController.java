@@ -4,6 +4,7 @@ import com.meteorfish.whosnext.application.review.ReviewAppService;
 import com.meteorfish.whosnext.domain.review.Review;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -17,12 +18,9 @@ import java.util.stream.Collectors;
 @Tag(name = "Review API", description = "취업 후기 관리 API")
 @RestController
 @RequestMapping("/api/reviews")
+@RequiredArgsConstructor
 public class ReviewController {
     private final ReviewAppService reviewAppService;
-
-    public ReviewController(ReviewAppService reviewAppService) {
-        this.reviewAppService = reviewAppService;
-    }
 
     @Operation(summary = "후기 작성", description = "새로운 취업 후기를 작성합니다.")
     @PostMapping

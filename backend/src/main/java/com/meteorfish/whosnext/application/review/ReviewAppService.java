@@ -9,6 +9,7 @@ import com.meteorfish.whosnext.infrastructure.persistence.member.MemberEntity;
 import com.meteorfish.whosnext.infrastructure.persistence.member.MemberRepository;
 import com.meteorfish.whosnext.infrastructure.persistence.review.ReviewEntity;
 import com.meteorfish.whosnext.infrastructure.persistence.review.ReviewRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,16 +19,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ReviewAppService {
     private final ReviewRepository reviewRepository;
     private final MemberRepository memberRepository;
     private final CompanyRepository companyRepository;
-
-    public ReviewAppService(ReviewRepository reviewRepository, MemberRepository memberRepository, CompanyRepository companyRepository) {
-        this.reviewRepository = reviewRepository;
-        this.memberRepository = memberRepository;
-        this.companyRepository = companyRepository;
-    }
 
     @Transactional
     public UUID create(Long memberId, ReviewCreateRequest request) {
@@ -36,7 +32,7 @@ public class ReviewAppService {
         CompanyEntity company = companyRepository.findById(request.companyId())
                 .orElseThrow(() -> new IllegalArgumentException("회사를 찾을 수 없습니다."));
 
-        Review review = new Review(null, memberId, request.companyId(),
+        Review review = new Review(null, member.toDomain(), company.toDomain(),
                 request.title(), request.content(),
                 request.tips(), request.rating(),
                 request.preparationPeriod(), request.techStack(), request.jobCategory(),
@@ -66,7 +62,7 @@ public class ReviewAppService {
                 .orElseThrow(() -> new IllegalArgumentException("리뷰를 찾을 수 없습니다."));
 
         // 권한 확인: 작성자 본인만 수정 가능
-        if (!entity.toDomain().getMemberId().equals(memberId)) {
+        if (!entity.toDomain().getMember().getId().equals(memberId)) {
             throw new IllegalStateException("수정 권한이 없습니다.");
         }
 
@@ -82,7 +78,7 @@ public class ReviewAppService {
         ReviewEntity entity = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new IllegalArgumentException("리뷰를 찾을 수 없습니다."));
 
-        if (!entity.toDomain().getMemberId().equals(memberId)) {
+        if (!entity.toDomain().getMember().getId().equals(memberId)) {
             throw new IllegalStateException("삭제 권한이 없습니다.");
         }
 

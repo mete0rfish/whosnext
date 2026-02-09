@@ -10,6 +10,7 @@ public record ReviewResponse(
         UUID id,
         Long memberId,
         UUID companyId,
+        String companyName,
         String title,
         String content,
         String tips,
@@ -22,8 +23,9 @@ public record ReviewResponse(
     public static ReviewResponse from(Review review) {
         return new ReviewResponse(
                 review.getId(),
-                review.getMemberId(),
-                review.getCompanyId(),
+                review.getMember().getId(),
+                review.getCompany().getId(),
+                review.getCompany().getName(),
                 review.getTitle(),
                 review.getContent(),
                 review.getTips(),

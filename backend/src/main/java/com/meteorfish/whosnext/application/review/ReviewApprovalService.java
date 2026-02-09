@@ -13,6 +13,7 @@ import com.meteorfish.whosnext.infrastructure.persistence.review.ReviewEntity;
 import com.meteorfish.whosnext.infrastructure.persistence.review.ReviewRepository;
 import com.meteorfish.whosnext.infrastructure.persistence.review.ReviewStagingEntity;
 import com.meteorfish.whosnext.infrastructure.persistence.review.ReviewStagingRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 @Service
+@RequiredArgsConstructor
 public class ReviewApprovalService {
     private final Logger logger = Logger.getLogger(ReviewApprovalService.class.getName());
 
@@ -32,20 +34,6 @@ public class ReviewApprovalService {
     private final CompanyRepository companyRepository;
     private final CompanyAliasRepository companyAliasRepository;
     private final McpClient mcpClient;
-
-    public ReviewApprovalService(ReviewStagingRepository stagingRepository,
-                                 ReviewRepository reviewRepository,
-                                 MemberRepository memberRepository,
-                                 CompanyRepository companyRepository,
-                                 CompanyAliasRepository companyAliasRepository,
-                                 McpClient mcpClient) {
-        this.stagingRepository = stagingRepository;
-        this.reviewRepository = reviewRepository;
-        this.memberRepository = memberRepository;
-        this.companyRepository = companyRepository;
-        this.companyAliasRepository = companyAliasRepository;
-        this.mcpClient = mcpClient;
-    }
 
     @Transactional
     public void approveReview(UUID reviewStagingId) {
@@ -66,8 +54,8 @@ public class ReviewApprovalService {
 
         Review review = new Review(
                 null,
-                member.getId(),
-                company.getId(),
+                member.toDomain(),
+                company.toDomain(),
                 staging.getTitle(),
                 staging.getContent(),
                 staging.getTips(),

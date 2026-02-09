@@ -5,12 +5,19 @@ import com.meteorfish.whosnext.domain.review.Review;
 import com.meteorfish.whosnext.infrastructure.persistence.company.CompanyEntity;
 import com.meteorfish.whosnext.infrastructure.persistence.member.MemberEntity;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "reviews")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReviewEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -46,22 +53,6 @@ public class ReviewEntity {
 
     private LocalDateTime createdAt;
 
-    protected ReviewEntity() {}
-
-    private ReviewEntity(UUID id, MemberEntity member, CompanyEntity company, String title, String content, String tips, int rating, String preparationPeriod, String techStack, JobCategory jobCategory, LocalDateTime createdAt) {
-        this.id = id;
-        this.member = member;
-        this.company = company;
-        this.title = title;
-        this.content = content;
-        this.tips = tips;
-        this.rating = rating;
-        this.preparationPeriod = preparationPeriod;
-        this.techStack = techStack;
-        this.jobCategory = jobCategory;
-        this.createdAt = createdAt;
-    }
-
     public static ReviewEntity from(Review review, MemberEntity member, CompanyEntity company) {
         return new ReviewEntity(
                 review.getId(),
@@ -81,8 +72,8 @@ public class ReviewEntity {
     public Review toDomain() {
         return new Review(
                 id,
-                member.getId(),
-                company.getId(),
+                member.toDomain(),
+                company.toDomain(),
                 title,
                 content,
                 tips,
